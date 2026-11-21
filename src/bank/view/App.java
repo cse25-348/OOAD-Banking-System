@@ -1,34 +1,64 @@
 package bank.view;
 
 import bank.controller.LoginController;
+import bank.model.AccountType;
 import bank.model.Bank;
 import bank.model.Customer;
+import bank.controller.DashboardController;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
+
 public class App extends Application {
+
+    private Bank bank;
+    private Stage stage;
+
     @Override
     public void start(Stage stage) throws Exception {
-        Bank bank = new Bank ("First National Bank", "Gaborone Main");
-        bank.addCustomer(new Customer("Thabo", "Molefe", "Plot 123, Gaborone", "71234567", "thabo@email.com")); //test cust: CUST0001
 
-        LoginView loginView = LoginView.load();
-        Scene scene = new Scene (loginView.getRoot(), 400, 300);
+        this.stage = stage;
+        bank = new Bank("First National Bank", "Gaborone Main");
 
-        new LoginController(bank, loginView, customer -> {
-            Label welcome = new Label ("Welcome, " + customer.getFirstName());
-            scene.setRoot(new StackPane(welcome));
-        });
-
+        Customer thabo = new Customer("Thabo", "Molefe", "Plot 123, Gaborone", "71234567", "thabo@email.com");
+        bank.addCustomer(thabo);
+        thabo.openAccount(AccountType.SAVINGS, 2000);
+        thabo.openAccount(AccountType.INVESTMENT, 1000);
         stage.setTitle("Banking System");
-        stage.setScene(scene);
+        showLogin();
         stage.show();
+    }
+
+    private void showLogin() throws Exception {
+        LoginView loginView = LoginView.load();
+        new LoginController(bank, loginView, this::showDashboard);
+        stage.setScene(new Scene(loginView.getRoot(), 400, 300));
+        stage.sizeToScene();
+    }
+
+    private void showDashboard(Customer customer) {
+        try {
+            DashboardView dashboardView = DashboardView.load();           new DashboardController (customer, dashboardView, () -> {
+            try {
+                showLogin();
+            } 
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+           });
+           stage.setScene(new Scene(dashboardView.getRoot(), 800, 560));
+           stage.sizeToScene();
+        } 
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main (String[] args) {
         launch(args);
     }
+    
 }

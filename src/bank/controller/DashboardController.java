@@ -1,0 +1,106 @@
+package bank.controller;
+
+import bank.model.Account;
+import bank.model.AccountType;
+import bank.model.Customer;
+import bank.view.DashboardView;
+import java.util.ArrayList;
+import java.util.List;
+
+public class DashboardController {
+    
+    private final Customer customer;
+    private final DashboardView view;
+    private List<Account> shownAccounts = new ArrayList<>();
+
+    public DashboardController(Customer customer, DashboardView view, Runnable onLogout) {
+        this.customer = customer;
+        this.view = view;
+        view.setWelcome("Welcome, " + customer.getFirstName() + " " + customer.getSurname());
+        view.setOnDeposit(this::handleDeposit);
+        view.setOnWithdraw(this::handleWithdraw);
+        view.setOnOpenAccount(this::handleOpenAccount);
+        view.setOnLogout(onLogout);
+        refresh();
+    }
+
+    private void refresh() {
+        shownAccounts = customer.getAccounts();
+        List<String> rows = new ArrayList<>();
+        for (Account a : shownAccounts) {
+            rows.add(String.format("%s  |  %s  |  BWP %.2f",
+                a.getAccountType(), a.getAccountNumber(), a.getBalance()));
+        } 
+        view.setAccounts(rows);
+    }
+
+    private Account selectedAccount() {
+        int i = view.getSelectedAccountIndex();
+        if(i < 0 || i>= shownAccounts.size()) {
+            view.showMessage("Select an account first",true);
+            return null;
+        }
+        return shownAccounts.get(i);
+    }
+    private void handleDeposit() {
+        Account account = selectedAccount();
+        if (account == null) return;
+        int index = view.getSelectedAccountIndex();
+        try {
+            account.deposit(Double.parseDouble(view.getAmountText()));
+            refresh();
+            view.selectAccount(index);
+            view.clearAmount();
+            view.showMessage("Deposit successful", false);
+        } 
+        catch (NumberFormatException e) {
+            view.showMessage("Enter a valid amount", true);
+        }
+        catch (IllegalArgumentException e) {
+                view.showMessage(e.getMessage(), true);
+            }
+        }
+
+        private void handleWithdraw() {
+            Account account = selectedAccount();
+            if (account == null) return;
+            int index = view.getSelectedAccountIndex();
+            try {
+                account.withdraw(Double.parseDouble(view.getAmountText()));
+                refresh();
+                view.selectAccount(index);
+                view.clearAmount();
+                view.showMessage("Withdrawal Successful", false);
+            } 
+        catch (NumberFormatException e) {
+            view.showMessage("Enter a valid amount", true);
+             }   
+         catch (IllegalArgumentException | UnsupportedOperationException e) {
+            view.showMessage(e.getMessage(), true);    
+        }
+    }
+    private void handleOpenAccount() {
+        try {
+            AccountType type = AccountType.valueOf(view.getNewAccountType());
+            String text = view.getOpeningDepositText();
+            double deposit = text.isEmpty() ? 0 : Double.parseDouble(text);
+            if (type == AccountType.CHEQUE) {
+                customer.openAccount(type, deposit,
+                    view.getCompanyName(), view.getCompanyAddress());
+            } 
+            else {
+                customer.openAccount(type, deposit);
+            }
+            refresh();
+            view.clearOpenAccountFields();
+            view.showMessage(type + " account opened", false);
+        } 
+        catch (NumberFormatException e) {
+           view.showMessage("Enter a valid opening deposit", true);
+        } 
+        catch (IllegalArgumentException | IllegalStateException e) {
+            view.showMessage(e.getMessage(), true);
+        } 
+    }
+}
+

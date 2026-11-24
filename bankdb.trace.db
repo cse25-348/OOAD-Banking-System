@@ -1,0 +1,6 @@
+2026-11-24 22:24:19.970735+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TRANSACTION" not found; SQL statement:
+DELETE FROM transaction WHERE account_number = ? [42102-224]
+2026-11-24 22:25:21.509250+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TRANSACTION" not found; SQL statement:
+DELETE FROM transaction WHERE account_number = ? [42102-224]

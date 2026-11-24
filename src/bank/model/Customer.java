@@ -29,6 +29,15 @@ public class Customer {
         this.email = email;
         this.accounts = new ArrayList <>();
     }
+        public static Customer restore(String customerId, String firstName, String surname, String address, String phoneNumber, String email) { 
+        Customer c = new Customer(firstName, surname, address, phoneNumber, email);
+        c.customerId = customerId;
+        int n = Integer.parseInt(customerId.substring(4));
+        if (n >= nextId) {
+            nextId = n + 1;
+        }
+        return c;
+    }
 
     void addAccount(Account account) {
         accounts.add(account);

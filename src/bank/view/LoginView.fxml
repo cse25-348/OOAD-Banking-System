@@ -6,7 +6,6 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.VBox?>
 
-
 <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="229.0" prefWidth="374.0" spacing="12.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bank.view.LoginView">
    <padding>
       <Insets top="20.0" />
@@ -14,7 +13,8 @@
    <children>
       <Label text="Banking System Login" />
       <TextField fx:id="idField" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="328.0" promptText="CUST0001" />
+      <Button mnemonicParsing="false" onAction="#onLoginClicked" prefHeight="24.0" prefWidth="100.0" text="Login" />
+      <Button mnemonicParsing="false" onAction="#onRegisterClicked" prefHeight="20.0" prefWidth="179.0" text="Register New Customer" />
       <Label fx:id="messageLabel" textFill="RED" />
-      <Button mnemonicParsing="false" onAction="#onLoginClicked" text="Login" />
    </children>
 </VBox>

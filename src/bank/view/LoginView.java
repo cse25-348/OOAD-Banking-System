@@ -13,6 +13,7 @@ public class LoginView {
 
     private Parent root;
     private Runnable onLogin;
+    private Runnable onRegister;
 
     public static LoginView load() throws IOException {
         FXMLLoader loader = new FXMLLoader(LoginView.class.getResource("LoginView.fxml"));
@@ -41,5 +42,15 @@ public class LoginView {
 
     public void showMessage(String message) {
         messageLabel.setText(message);
+    }
+
+
+@FXML
+    private void onRegisterClicked() {
+        if (onRegister != null) onRegister.run();
+    }
+
+ public void setOnRegister(Runnable action) {
+     this.onRegister = action; 
     }
 }

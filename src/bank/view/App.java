@@ -6,6 +6,7 @@ import bank.model.Bank;
 import bank.model.Customer;
 import bank.controller.DashboardController;
 import bank.dao.BankStore;
+import bank.controller.RegisterController;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -43,6 +44,7 @@ public class App extends Application {
     private void showLogin() throws Exception {
         LoginView loginView = LoginView.load();
         new LoginController(bank, loginView, this::showDashboard);
+        loginView.setOnRegister(this::showRegister);
         stage.setScene(new Scene(loginView.getRoot(), 400, 300));
         stage.sizeToScene();
     }
@@ -58,6 +60,23 @@ public class App extends Application {
                 }
             });
             stage.setScene(new Scene(dashboardView.getRoot(), 800, 560));
+            stage.sizeToScene();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+        private void showRegister() {
+        try {
+            RegisterView registerView = RegisterView.load();
+            new RegisterController(bank, registerView, store, () -> {
+                try {
+                    showLogin();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+            stage.setScene(new Scene(registerView.getRoot(), 420, 480));
             stage.sizeToScene();
         } catch (Exception e) {
             e.printStackTrace();

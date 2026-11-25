@@ -25,6 +25,8 @@ public abstract class Account implements AccountOperations {
     this.accountType = accountType;
     this.branch = branch;
     this.balance = 0;
+    this.balance = 0;
+    customer.addAccount(this);
   }
 
   public List<Transaction> getTransactions() {

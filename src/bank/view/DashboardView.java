@@ -26,6 +26,7 @@ public class DashboardView {
     private Runnable onWithdraw;
     private Runnable onOpenAccount;
     private Runnable onLogout;
+    private Runnable onPayInterest;    
 
     public static DashboardView load() throws IOException {
         FXMLLoader loader = new FXMLLoader (DashboardView.class.getResource("DashboardView.fxml"));
@@ -55,6 +56,15 @@ public class DashboardView {
     @FXML private void onLogoutClicked() { 
         if (onLogout != null) onLogout.run(); 
     }
+
+    @FXML
+    private void onPayInterestClicked() {
+        if (onPayInterest != null) onPayInterest.run();
+    }
+
+    public void setOnPayInterest(Runnable action) {
+         this.onPayInterest = action; 
+    }   
 
     public Parent getRoot() {
         return root; 

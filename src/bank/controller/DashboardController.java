@@ -1,12 +1,10 @@
 package bank.controller;
 
+import bank.dao.BankStore;
 import bank.model.Account;
 import bank.model.AccountType;
 import bank.model.Customer;
 import bank.view.DashboardView;
-import bank.dao.BankStore;
-
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +24,7 @@ public class DashboardController {
         view.setOnWithdraw(this::handleWithdraw);
         view.setOnOpenAccount(this::handleOpenAccount);
         view.setOnLogout(onLogout);
+        view.setOnPayInterest(this::handlePayInterest);      
         refresh();
     }
 
@@ -109,6 +108,26 @@ public class DashboardController {
         catch (IllegalArgumentException | IllegalStateException e) {
             view.showMessage(e.getMessage(), true);
         } 
+    }
+
+    private void handlePayInterest() {
+        double total = 0;
+        int index = view.getSelectedAccountIndex();
+        try {
+            for (Account a : customer.getAccounts()) {
+                double interest = a.calculateInterest();
+                if (interest > 0) {
+                    a.deposit(interest);
+                    store.saveMovement(a);
+                    total += interest;
+                }
+            }
+            refresh();
+            view.selectAccount(index);
+            view.showMessage(String.format("Monthly interest paid: BWP %.2f", total), false);
+        } catch (IllegalStateException e) {
+            view.showMessage(e.getMessage(), true);
+        }
     }
 }
 
